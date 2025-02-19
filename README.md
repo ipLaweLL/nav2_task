@@ -109,7 +109,33 @@ Interfaces with AMCL node for initialisation, Nav2 nodes to send and publishes m
 ## Configuration Files
 
 ### nav_params.yaml
-Fine tuned to match environmental constraints and robot capabilities
+Fine tuned to match environmental constraints and robot capabilities|
+Optimized Configuration
+The optimized configuration uses MPPI controller (nav2_mppi_controller::MPPIController), whereas the default uses the DWB controller (dwb_core::DWBLocalPlanner). The MPPI controller implements Model Predictive Path Integral control, which provides more advanced trajectory planning and obstacle avoidance capabilities.
+The optimized configuration includes both precise_goal_checker and general_goal_checker, while the default only has general_goal_checker. The precise goal checker has tighter tolerances (0.1m for both position and orientation) compared to the default's 0.25m tolerances, allowing for more accurate positioning at the destination.
+MPPI Controller Specific Parameters
+The optimized configuration includes numerous MPPI-specific parameters that significantly enhance navigation performance:
+
+Time steps of 56 and model time step of 0.05 seconds for trajectory prediction
+Large batch size of 2000 for thorough trajectory evaluation
+Appropriate noise parameters for trajectory sampling
+Higher maximum velocity (0.5 m/s compared to default 0.26 m/s)
+Well-tuned acceleration limits for smoother motion
+Optimization parameters like temperature (0.3) and gamma (0.015)
+Specialized critics including ConstraintCritic, CostCritic, GoalCritic, GoalAngleCritic, PathAlignCritic, PathFollowCritic, PathAngleCritic, and PreferForwardCritic
+High collision cost (1,000,000) for safer navigation
+
+Planner Server
+A key difference in the optimized configuration is enabling A* algorithm for path planning (use_astar: true), whereas the default uses Dijkstra's algorithm (use_astar: false). A* can provide more efficient path planning in complex environments by using heuristics to guide the search, potentially resulting in faster path computation and better routes.
+
+Key Advantages of the Optimized Configuration
+More intelligent path planning with A* algorithm, which can find optimal paths more efficiently than Dijkstra's algorithm in complex environments
+Advanced controller implementation using MPPI, which provides better handling of dynamic obstacles, more sophisticated trajectory generation, and smoother motion planning through its predictive capabilities
+Higher performance capabilities with faster maximum velocity (0.5 m/s vs 0.26 m/s) and better acceleration handling
+More precise final positioning with tighter goal tolerances and balanced approach behavior
+Enhanced path following behavior with specialized critics that maintain a better balance between staying on the planned path and adapting to environmental changes
+Improved safety through higher collision costs and more sophisticated obstacle avoidance through the predictive capabilities of MPPI
+Better computational efficiency through batch processing for trajectory evaluation, appropriate pruning distance, and efficient update parameters
 
 ## Development Tools
 
@@ -130,8 +156,8 @@ colcon build --packages-select accl_task or colcon build --symlink-install \
    - Check transform tree
    - Verify localization
    - Review costmap parameters
-
 3. **Simulation Issues**
    - Confirm use_sim_time settings
    - Check Gazebo launch
    - Verify sensor data
+```
