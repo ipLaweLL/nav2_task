@@ -85,7 +85,8 @@ ros2 launch nav2_task localization_launch.py map:=./src/nav2_task/maps/warehouse
 ros2 launch my_bot navigation_launch.py use_sim_time:=false map_subscribe_transient_local:=true
 
 # Terminal 5: Launch navigation node
-ros2 run nav_client nav_client_node
+ros2 run nav_client nav_client_node #for single point navigation
+ros2 run nav_client multi_client_node #for multi point navigation
 
 ```
 ## Launch Files Explained
