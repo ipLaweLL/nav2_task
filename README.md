@@ -1,4 +1,4 @@
-# Differential Drive Robot with Nav2 and Custom Navigation Node
+# Differential Drive Robot with Nav2 and Custom Navigation Nodes
 
 A ROS 2 based diff drive robot featuring custom navigation nodes and optimized parameters for autonomous operation done using Zenoh middleware (NOTE: fastDDS breaks the gazebo environment so please consider using alternate middleware setups, I've simulated mine using Zenoh, CycloneDDS works equally fine)
 
@@ -39,20 +39,23 @@ The specialized navigation implementation includes:
 - Optimized obstacle avoidance
 - Real-time path optimization
 
-### 2. Simulation Environment
+### 2. Multipoint Navigation Node
+Multipoint navigation
+
+### 3. Simulation Environment
 Fully integrated Gazebo simulation with:
 - Warehouse environment
 - Simulated sensors
 - Performance monitoring
 - Debug visualization
 
-### 3. Localization System
+### 4. Localization System
 Map-based positioning system using:
 - AMCL localization
 - Custom map integration
 - Real-time position tracking
 
-### 4. Navigation System
+### 5. Navigation System
 Using Nav2 stack and updated parameters
 
 ## Running the Complete System
@@ -64,12 +67,16 @@ ros2 run rmw_zenoh_cpp rmw_zenohd
 
 ### 2. Launch Core System
 ```bash
+# Build specific packages inside your development workspace(dev_ws or ros2_ws)
+colcon build --packages-select accl_task or colcon build --symlink-install
+
+cd dev_ws && source install/setup.bash #inside every terminal
+
 # Terminal 1: Launch simulation and robot
 ros2 launch nav2_task launch_sim.launch.py
 
 # Terminal 2: Launch rviz
-rviz2
-Select robotmodel, laserscan, map, plan and marker visualisation plugins
+rviz2 -d src/nav2_task/config/main.rviz
 
 # Terminal 3: Launch localization
 ros2 launch nav2_task localization_launch.py map:=./src/nav2_task/maps/warehouse_save.yaml use_sim_time:=true
@@ -105,6 +112,9 @@ Starts navigation stack:
 
 ### nav_client_node.cpp
 Interfaces with AMCL node for initialisation, Nav2 nodes to send and publishes marker topics to rviz
+
+### multipoint_nav_client.cpp
+Implemented multi-goal navigation, where the robot autonomously visits multiple locations
 
 ## Configuration Files
 
